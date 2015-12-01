@@ -7,8 +7,8 @@ namespace AngleInterpolation.ViewModel
     {
         #region Private Members
 
-        private Point3D _position;
-        private Point3D _rotation;
+        private Vector3D _position;
+        private Vector3D _rotation;
 
         #endregion Private Members
 
@@ -17,7 +17,7 @@ namespace AngleInterpolation.ViewModel
         /// <summary>
         /// Gets or sets the position of the axis.
         /// </summary>
-        public Point3D Position
+        public Vector3D Position
         {
             get { return _position; }
             set
@@ -31,7 +31,7 @@ namespace AngleInterpolation.ViewModel
         /// <summary>
         /// Gets or sets the rotation of the axis.
         /// </summary>
-        public Point3D Rotation
+        public Vector3D Rotation
         {
             get { return _rotation; }
             set
@@ -46,7 +46,7 @@ namespace AngleInterpolation.ViewModel
 
         #region Constructors
 
-        public AxisDetails(Point3D position, Point3D rotation)
+        public AxisDetails(Vector3D position, Vector3D rotation)
         {
             Position = position;
             Rotation = rotation;

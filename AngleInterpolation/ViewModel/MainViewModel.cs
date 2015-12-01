@@ -3,8 +3,6 @@ using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using SharpGL;
 using SharpGL.Enumerations;
-using SharpGL.SceneGraph.Core;
-using SharpGL.SceneGraph.Primitives;
 
 namespace AngleInterpolation.ViewModel
 {
@@ -133,8 +131,8 @@ namespace AngleInterpolation.ViewModel
 
         public MainViewModel()
         {
-            StartAxis = new AxisDetails(new Point3D(0, 0, 0), new Point3D(0, 0, 0));
-            EndAxis = new AxisDetails(new Point3D(0, 0, 0), new Point3D(0, 0, 0));
+            StartAxis = new AxisDetails(new Vector3D(0, 0, 0), new Vector3D(0, 0, 0));
+            EndAxis = new AxisDetails(new Vector3D(0, 0, 0), new Vector3D(0, 0, 0));
 
             _timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 10) };
             _timer.Tick += _timer_Tick;
@@ -159,8 +157,8 @@ namespace AngleInterpolation.ViewModel
 
         private void StartAnimation(object obj)
         {
-            _quaternionAxis = new QuaternionAxis(StartAxis.Position, StartAxis.Rotation);
-            _eulerAxis = new EulerAxis(StartAxis.Position, StartAxis.Rotation);
+            _quaternionAxis = new QuaternionAxis(StartAxis.Position, StartAxis.Rotation, EndAxis.Position, EndAxis.Rotation);
+            _eulerAxis = new EulerAxis(StartAxis.Position, StartAxis.Rotation, EndAxis.Position, EndAxis.Rotation);
 
             _timerStartTime = DateTime.Now;
             _timer.Start();
