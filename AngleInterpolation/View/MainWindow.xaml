@@ -1,0 +1,54 @@
+﻿<Window x:Class="AngleInterpolation.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:view="clr-namespace:AngleInterpolation.View"
+        Title="MainWindow" Height="350" Width="525" WindowState="Maximized">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Separator Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Background="SlateGray" BorderThickness="2" HorizontalAlignment="Stretch"/>
+        <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <view:PositionControl Grid.Column="0" DataContext="{Binding StartAxis.Position}"/>
+            <view:PositionControl Grid.Column="1" DataContext="{Binding StartAxis.Rotation}"/>
+            <view:PositionControl Grid.Column="2" DataContext="{Binding EndAxis.Position}"/>
+            <view:PositionControl Grid.Column="3" DataContext="{Binding EndAxis.Rotation}"/>
+
+            <StackPanel Grid.Column="4" Orientation="Vertical">
+                <TextBlock Text="Quaternion interpolation:"/>
+                <RadioButton Content="Linear"/>
+                <RadioButton Content="Spherical"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="5" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Frame count: "/>
+                    <TextBox Text="{Binding FrameCount}"/>
+                </StackPanel>
+                <CheckBox Content="Show all frames" IsChecked="{Binding ShowAllFrames}"/>
+                <Button Content="Start Animation" Command="{Binding StartAnimationCommand}"/>
+            </StackPanel>
+        </Grid>
+
+        <!--TODO: Temporarily instead of the OpenTK control-->
+        <Canvas Grid.Column="0" Grid.Row="1" Background="Black" Margin="5"/>
+        <Canvas Grid.Column="1" Grid.Row="1" Background="Black" Margin="5"/>
+
+    </Grid>
+</Window>
