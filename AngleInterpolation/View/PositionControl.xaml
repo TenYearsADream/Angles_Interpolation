@@ -7,7 +7,6 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <StackPanel Orientation="Vertical">
-        <TextBlock Text="{Binding DataContext}"/>
         <StackPanel Orientation="Horizontal">
             <TextBlock Text="X: "/>
             <TextBox Text="{Binding X}"/>

@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
+using SharpGL;
+using SharpGL.Enumerations;
+using SharpGL.SceneGraph.Core;
+using SharpGL.SceneGraph.Primitives;
 
 namespace AngleInterpolation.ViewModel
 {
@@ -24,10 +28,40 @@ namespace AngleInterpolation.ViewModel
 
         private DispatcherTimer _timer;
         private DateTime _timerStartTime;
+        private double _viewportHeight;
+        private double _viewportWidth;
 
         #endregion Private Members
 
         #region Public Properties
+
+        /// <summary>
+        /// Gets or sets the width of the viewport.
+        /// </summary>
+        public double ViewportWidth
+        {
+            get { return _viewportWidth; }
+            set
+            {
+                if (_viewportWidth == value) return;
+                _viewportWidth = value;
+                OnPropertyChanged("ViewportWidth");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the height of the viewport.
+        /// </summary>
+        public double ViewportHeight
+        {
+            get { return _viewportHeight; }
+            set
+            {
+                if (_viewportHeight == value) return;
+                _viewportHeight = value;
+                OnPropertyChanged("ViewportHeight");
+            }
+        }
 
         /// <summary>
         /// Gets or sets the start axis details.
@@ -101,14 +135,27 @@ namespace AngleInterpolation.ViewModel
         {
             StartAxis = new AxisDetails(new Point3D(0, 0, 0), new Point3D(0, 0, 0));
             EndAxis = new AxisDetails(new Point3D(0, 0, 0), new Point3D(0, 0, 0));
-            
+
             _timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 10) };
             _timer.Tick += _timer_Tick;
         }
-        
+
         #endregion Constructors
 
         #region Private Methods
+
+        private void ClearRenderState(OpenGL gl)
+        {
+            gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
+            InitializeMatrices(gl);
+        }
+
+        private void InitializeMatrices(OpenGL gl)
+        {
+            gl.MatrixMode(MatrixMode.Modelview);
+            gl.LoadIdentity();
+            gl.Translate(0.0f, 0.0f, -50.0f);
+        }
 
         private void StartAnimation(object obj)
         {
@@ -128,5 +175,19 @@ namespace AngleInterpolation.ViewModel
         }
 
         #endregion Private Methods
+
+        #region Public Properties
+
+        public void RenderEuler(OpenGL gl)
+        {
+            ClearRenderState(gl);
+        }
+
+        public void RenderQuaternion(OpenGL gl)
+        {
+            ClearRenderState(gl);
+        }
+
+        #endregion Public Properties
     }
 }
