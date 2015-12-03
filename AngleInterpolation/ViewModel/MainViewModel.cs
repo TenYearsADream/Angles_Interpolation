@@ -131,8 +131,8 @@ namespace AngleInterpolation.ViewModel
 
         public MainViewModel()
         {
-            StartAxis = new AxisDetails(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
-            EndAxis = new AxisDetails(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+            StartAxis = new AxisDetails(new Vector3(-20, 0, 10), new Vector3(0, 0, 0));
+            EndAxis = new AxisDetails(new Vector3(20, 0, -10), new Vector3(0, 0, 0));
 
             _quaternionAxis = new QuaternionAxis(StartAxis.Position, StartAxis.Rotation, EndAxis.Position, EndAxis.Rotation);
             _eulerAxis = new EulerAxis(StartAxis.Position, StartAxis.Rotation, EndAxis.Position, EndAxis.Rotation);

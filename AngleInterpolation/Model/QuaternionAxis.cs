@@ -29,23 +29,22 @@ namespace AngleInterpolation.Model
         // http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
         public override void UpdatePosition(TimeSpan t)
         {
-            var delta = EndPosition - StartPosition;
-            if (delta.Length == 0) return;
+            if ((EndPosition - Position).Length <0.001) return;
 
-            var dot = StartPosition.Dot(EndPosition);
+            var cosTheta = StartPosition.Dot(EndPosition);
 
-            if (dot > DotThreshold)
+            if (cosTheta > DotThreshold)
             {
-                var interpolation = StartPosition + t.Milliseconds * delta / 100.0;
+                var interpolation = StartPosition + (EndPosition - StartPosition) * t.TotalMilliseconds / 100.0;
                 interpolation = interpolation.Normalized;
                 Position = interpolation;
             }
 
-            dot = Clamp(dot, -1, 1);
-            var theta0 = Math.Acos(dot);
-            var theta = theta0 * t.Milliseconds;
+            cosTheta = Clamp(cosTheta, -1, 1);
+            var theta0 = Math.Acos(cosTheta);
+            var theta = theta0 * t.TotalMilliseconds / 5000;
 
-            var result = EndPosition - (StartPosition * dot);
+            var result = EndPosition - (StartPosition * cosTheta);
             if (result.Length != 0)
                 result = result.Normalized;
             Position = (StartPosition * Math.Cos(theta)) + (result * Math.Sin(theta));
