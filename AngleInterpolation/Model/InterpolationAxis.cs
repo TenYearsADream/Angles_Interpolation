@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Documents;
 using SharpGL;
 
 namespace AngleInterpolation.Model
@@ -6,6 +7,11 @@ namespace AngleInterpolation.Model
     public abstract class InterpolationAxis : AxisDetails
     {
         #region Private Members
+
+        private const double PositionDelta = 0.01;
+        private const double AngleDelta = 2.0;
+
+        //private List
 
         #endregion Private Members
 
@@ -34,15 +40,28 @@ namespace AngleInterpolation.Model
 
         #endregion Constructors
 
+        #region Protected Methods
+
+        protected abstract Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, TimeSpan t, double epsilon);
+
+        #endregion Protected Methods
+
         #region Public Methods
 
-        public abstract void UpdatePosition(TimeSpan t);
+        public void UpdatePosition(TimeSpan t)
+        {
+            Position = UpdatePosition(StartPosition, EndPosition, Position, t, PositionDelta);
+            Rotation = UpdatePosition(StartRotation, EndRotation, Rotation, t, AngleDelta);
+        }
 
         public override void Render(OpenGL gl)
         {
             base.Render(gl);
             Render(gl, EndPosition, EndRotation);
         }
+
+        public void ShowAllFrames()
+        {}
 
         #endregion Public Methods
 

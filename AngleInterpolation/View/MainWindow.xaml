@@ -4,7 +4,12 @@
         xmlns:view="clr-namespace:AngleInterpolation.View"
         xmlns:wpf="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
         xmlns:viewModel="clr-namespace:AngleInterpolation.ViewModel"
+        xmlns:model="clr-namespace:AngleInterpolation.Model"
         Title="MainWindow" Height="350" Width="525" WindowState="Maximized">
+    <Window.Resources>
+        <model:InterpolationTypeConverter x:Key="InterpolationTypeConverter"/>
+    </Window.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="150"/>
@@ -46,8 +51,8 @@
 
             <StackPanel Grid.Column="4" Orientation="Vertical">
                 <TextBlock Text="Quaternion interpolation:"/>
-                <RadioButton Content="Linear"/>
-                <RadioButton Content="Spherical"/>
+                <RadioButton Content="Linear" IsChecked="{Binding QuaternionAxis.InterpolationType, Converter={StaticResource InterpolationTypeConverter}, ConverterParameter={x:Static model:InterpolationType.Lerp}}"/>
+                <RadioButton Content="Spherical" IsChecked="{Binding QuaternionAxis.InterpolationType, Converter={StaticResource InterpolationTypeConverter}, ConverterParameter={x:Static model:InterpolationType.Slerp}}"/>
             </StackPanel>
 
             <StackPanel Grid.Column="5" Orientation="Vertical">
@@ -55,8 +60,9 @@
                     <TextBlock Text="Frame count: "/>
                     <TextBox Text="{Binding FrameCount}"/>
                 </StackPanel>
-                <CheckBox Content="Show all frames" IsChecked="{Binding ShowAllFrames}"/>
+                <Button Content="Show all frames" Command="{Binding ShowAllFramesCommand}"/>
                 <Button Content="Start Animation" Command="{Binding StartAnimationCommand}"/>
+                <Button Content="Reset Animation" Command="{Binding ResetAnimationCommand}"/>
             </StackPanel>
         </Grid>
 

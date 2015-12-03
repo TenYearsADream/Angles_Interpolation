@@ -21,8 +21,9 @@ namespace AngleInterpolation.Model
 
         #endregion Constructors
 
-        public override void UpdatePosition(TimeSpan t)
+        protected override Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, TimeSpan t, double epsilon)
         {
+            return Position;
         }
     }
 }

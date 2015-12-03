@@ -20,9 +20,10 @@ namespace AngleInterpolation.ViewModel
         private EulerAxis _eulerAxis;
 
         private int _frameCount;
-        private bool _showAllFrames;
 
         private DelegateCommand _startAnimationCommand;
+        private DelegateCommand _resetAnimationCommand;
+        private DelegateCommand _showAllFramesCommand;
 
         private DispatcherTimer _timer;
         private DateTime _timerStartTime;
@@ -90,6 +91,20 @@ namespace AngleInterpolation.ViewModel
         }
 
         /// <summary>
+        /// Gets or sets the quaternion axis details.
+        /// </summary>
+        public QuaternionAxis QuaternionAxis
+        {
+            get { return _quaternionAxis; }
+            set
+            {
+                if (_quaternionAxis == value) return;
+                _quaternionAxis = value;
+                OnPropertyChanged("QuaternionAxis");
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the frame count.
         /// </summary>
         public int FrameCount
@@ -104,17 +119,11 @@ namespace AngleInterpolation.ViewModel
         }
 
         /// <summary>
-        /// Gets or sets the value indicating whether all frames should be shown.
+        /// Gets or sets the ShowAllFrames Command.
         /// </summary>
-        public bool ShowAllFrames
+        public DelegateCommand ShowAllFramesCommand
         {
-            get { return _showAllFrames; }
-            set
-            {
-                if (_showAllFrames == value) return;
-                _showAllFrames = value;
-                OnPropertyChanged("ShowAllFrames");
-            }
+            get { return _showAllFramesCommand ?? (_showAllFramesCommand = new DelegateCommand(ShowAllFrames)); }
         }
 
         /// <summary>
@@ -123,6 +132,14 @@ namespace AngleInterpolation.ViewModel
         public DelegateCommand StartAnimationCommand
         {
             get { return _startAnimationCommand ?? (_startAnimationCommand = new DelegateCommand(StartAnimation)); }
+        }
+
+        /// <summary>
+        /// Gets the ResetAnimation Command.
+        /// </summary>
+        public DelegateCommand ResetAnimationCommand
+        {
+            get { return _resetAnimationCommand ?? (_resetAnimationCommand = new DelegateCommand(ResetAnimation)); }
         }
 
         #endregion Public Properties
@@ -136,7 +153,7 @@ namespace AngleInterpolation.ViewModel
 
             _quaternionAxis = new QuaternionAxis(StartAxis.Position, StartAxis.Rotation, EndAxis.Position, EndAxis.Rotation);
             _eulerAxis = new EulerAxis(StartAxis.Position, StartAxis.Rotation, EndAxis.Position, EndAxis.Rotation);
-       
+
             _timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 10) };
             _timer.Tick += _timer_Tick;
         }
@@ -162,6 +179,21 @@ namespace AngleInterpolation.ViewModel
         {
             _timerStartTime = DateTime.Now;
             _timer.Start();
+        }
+
+        private void ResetAnimation(object obj)
+        {
+            _timer.Stop();
+
+            _quaternionAxis = new QuaternionAxis(StartAxis.Position, StartAxis.Rotation, EndAxis.Position, EndAxis.Rotation);
+            _eulerAxis = new EulerAxis(StartAxis.Position, StartAxis.Rotation, EndAxis.Position, EndAxis.Rotation);
+        }
+
+        private void ShowAllFrames(object obj)
+        {
+            ResetAnimation(obj);
+            _quaternionAxis.ShowAllFrames();
+            _eulerAxis.ShowAllFrames();
         }
 
         private void _timer_Tick(object sender, EventArgs e)

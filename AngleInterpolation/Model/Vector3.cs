@@ -68,6 +68,11 @@ namespace AngleInterpolation.Model
             return new Vector3(vector.X * value, vector.Y * value, vector.Z * value);
         }
 
+        public static Vector3 operator *(double value, Vector3 vector)
+        {
+            return new Vector3(vector.X * value, vector.Y * value, vector.Z * value);
+        }
+
         public static Vector3 operator *(Vector3 vector, int value)
         {
             return new Vector3(vector.X * value, vector.Y * value, vector.Z * value);
