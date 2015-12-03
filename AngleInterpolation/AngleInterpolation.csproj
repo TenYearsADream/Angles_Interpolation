@@ -62,11 +62,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ViewModel\AxisDetails.cs" />
+    <Compile Include="Model\Vector3.cs" />
+    <Compile Include="ViewModel\DebugConverter.cs" />
+    <Compile Include="Model\AxisDetails.cs" />
+    <Compile Include="Model\InterpolationAxis.cs" />
     <Compile Include="ViewModel\DelegateCommand.cs" />
-    <Compile Include="ViewModel\EulerAxis.cs" />
+    <Compile Include="Model\EulerAxis.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\QuaternionAxis.cs" />
+    <Compile Include="Model\QuaternionAxis.cs" />
     <Compile Include="ViewModel\SizeObserver.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\PositionControl.xaml.cs">
@@ -117,9 +120,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
