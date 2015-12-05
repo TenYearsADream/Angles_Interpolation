@@ -5,11 +5,11 @@
         xmlns:wpf="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
         xmlns:viewModel="clr-namespace:AngleInterpolation.ViewModel"
         xmlns:model="clr-namespace:AngleInterpolation.Model"
-        Title="MainWindow" Height="350" Width="525" WindowState="Maximized">
+        Title="MainWindow" Height="350" Width="1333" WindowState="Maximized">
     <Window.Resources>
         <model:InterpolationTypeConverter x:Key="InterpolationTypeConverter"/>
     </Window.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="150"/>
@@ -29,7 +29,8 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Orientation="Vertical">
@@ -58,11 +59,15 @@
             <StackPanel Grid.Column="5" Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Frame count: "/>
-                    <TextBox Text="{Binding FrameCount}"/>
+                    <TextBox Text="{Binding FrameCount}" VerticalAlignment="Top"/>
                 </StackPanel>
                 <Button Content="Show all frames" Command="{Binding ShowAllFramesCommand}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="6" Orientation="Vertical">
                 <Button Content="Start Animation" Command="{Binding StartAnimationCommand}"/>
                 <Button Content="Reset Animation" Command="{Binding ResetAnimationCommand}"/>
+                <Button Content="Reset Viewport" Command="{Binding ResetViewportCommand}"/>
             </StackPanel>
         </Grid>
 

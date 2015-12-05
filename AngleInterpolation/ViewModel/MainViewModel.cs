@@ -30,6 +30,7 @@ namespace AngleInterpolation.ViewModel
         private DelegateCommand _startAnimationCommand;
         private DelegateCommand _resetAnimationCommand;
         private DelegateCommand _showAllFramesCommand;
+        private DelegateCommand _resetViewportCommand;
 
         private const int AnimationTime = 10000;
 
@@ -154,6 +155,14 @@ namespace AngleInterpolation.ViewModel
             get { return _resetAnimationCommand ?? (_resetAnimationCommand = new DelegateCommand(ResetAnimation)); }
         }
 
+        /// <summary>
+        /// Gets the ResetViewport Command.
+        /// </summary>
+        public DelegateCommand ResetViewportCommand
+        {
+            get { return _resetViewportCommand ?? (_resetViewportCommand = new DelegateCommand(ResetViewport)); }
+        }
+
         #endregion Public Properties
 
         #region Constructors
@@ -193,7 +202,7 @@ namespace AngleInterpolation.ViewModel
 
             gl.Scale(_scale, _scale, _scale);
             gl.Rotate(_rotation.X, 0.0f, 1.0f, 0.0f);
-            gl.Rotate(_rotation.Y, 1.0f, 0.0f, 0.0f);
+            gl.Rotate(_rotation.Y, 0.0f, 0.0f, 1.0f);
 
             gl.GetDouble(OpenGL.GL_MODELVIEW_MATRIX, _modelview);
             gl.GetDouble(OpenGL.GL_PROJECTION_MATRIX, _projection);
@@ -214,6 +223,12 @@ namespace AngleInterpolation.ViewModel
             _eulerAxis = new EulerAxis(StartAxis.Position, StartAxis.Rotation, EndAxis.Position, EndAxis.Rotation);
         }
 
+        private void ResetViewport(object obj)
+        {
+            _scale = 1.0;
+            _rotation = new Vector(0, 0);
+        }
+
         private void ShowAllFrames(object obj)
         {
             ResetAnimation(obj);
@@ -228,6 +243,55 @@ namespace AngleInterpolation.ViewModel
             gl.UnProject(_previousMousePosition.X, _previousMousePosition.Y, 0, _modelview, _projection, _viewport, ref x, ref y, ref z);
 
             return new Point(x, y);
+        }
+
+        private void DrawAxis(OpenGL gl)
+        {
+            gl.PushMatrix();
+            gl.LoadIdentity();
+
+            gl.Translate(-0.85, -0.7, -2.0);
+            gl.Rotate(_rotation.X, 1.0, 0.0, 0.0);
+            gl.Rotate(_rotation.Y, 0.0, 1.0, 0.0);
+
+            gl.Begin(BeginMode.Lines);
+
+            // draw line for x axis
+            gl.Color(1.0, 0.0, 0.0);
+            gl.Vertex(0.0, 0.0, 0.0);
+            gl.Vertex(0.1, 0.0, 0.0);
+
+            gl.Vertex(0.11, 0.0, 0.0);
+            gl.Vertex(0.12, -0.01, 0.0);
+            gl.Vertex(0.11, -0.01, 0.0);
+            gl.Vertex(0.12, 0.0, 0.0);
+
+            // draw line for z axis
+            gl.Color(0.0, 1.0, 0.0);
+            gl.Vertex(0.0, 0.0, 0.0);
+            gl.Vertex(0.0, 0.1, 0.0);
+
+            gl.Vertex(0.02, 0.1, 0.0);
+            gl.Vertex(0.01, 0.1, 0.0);
+            gl.Vertex(0.01, 0.1, 0.0);
+            gl.Vertex(0.02, 0.11, 0.0);
+            gl.Vertex(0.02, 0.11, 0.0);
+            gl.Vertex(0.01, 0.11, 0.0);
+
+            // draw line for y axis
+            gl.Color(0.0, 0.0, 1.0);
+            gl.Vertex(0.0, 0.0, 0.0);
+            gl.Vertex(0.0, 0.0, 0.1);
+
+            gl.Vertex(0.0, 0.01, 0.1);
+            gl.Vertex(0.0, 0.02, 0.1);
+            gl.Vertex(0.01, 0.03, 0.1);
+            gl.Vertex(0.0, 0.02, 0.1);
+            gl.Vertex(-0.01, 0.03, 0.1);
+            gl.Vertex(0.0, 0.02, 0.1);
+
+            gl.End();
+            gl.PopMatrix();
         }
 
         private void _timer_Tick(object sender, EventArgs e)
@@ -249,6 +313,8 @@ namespace AngleInterpolation.ViewModel
         public void RenderEuler(OpenGL gl)
         {
             ClearRenderState(gl);
+            DrawAxis(gl);
+
             if (_eulerAxis != null)
                 _eulerAxis.Render(gl);
         }
@@ -260,6 +326,8 @@ namespace AngleInterpolation.ViewModel
         public void RenderQuaternion(OpenGL gl)
         {
             ClearRenderState(gl);
+            DrawAxis(gl);
+
             if (_quaternionAxis != null)
                 _quaternionAxis.Render(gl);
         }
@@ -269,12 +337,14 @@ namespace AngleInterpolation.ViewModel
             _scale += eventArgs.Delta / 500.0;
         }
 
-        public void MouseMove(MouseEventArgs eventArgs)
+        public void MouseMove(IInputElement sender, MouseEventArgs eventArgs)
         {
             if (eventArgs.RightButton == MouseButtonState.Pressed)
             {
-                _rotation.X += (eventArgs.GetPosition(null).X - _previousMousePosition.X) / 50;
-                _rotation.Y += (eventArgs.GetPosition(null).Y - _previousMousePosition.Y) / 50;
+                _rotation.X += (eventArgs.GetPosition(sender).X - _previousMousePosition.X) / 2.0;
+                _rotation.Y += (eventArgs.GetPosition(sender).Y - _previousMousePosition.Y) / 2.0;
+
+                _previousMousePosition = eventArgs.GetPosition(sender);
             }
         }
 
@@ -287,16 +357,16 @@ namespace AngleInterpolation.ViewModel
                 var point = FindPointPositionInViewport();
 
                 StartAxis.Position.X = point.X * ViewportWidth / 1.6;
-                StartAxis.Position.Y = -point.Y * ViewportHeight / 1.4;
-                StartAxis.Position.Z = 0;
+                StartAxis.Position.Y = 0;
+                StartAxis.Position.Z = -point.Y * ViewportHeight / 1.4;
             }
             else if (Keyboard.IsKeyDown(Key.E))
             {
                 var point = FindPointPositionInViewport();
 
                 EndAxis.Position.X = point.X * ViewportWidth / 1.6;
-                EndAxis.Position.Y = -point.Y * ViewportHeight / 1.4;
-                EndAxis.Position.Z = 0;
+                EndAxis.Position.Y = 0;
+                EndAxis.Position.Z = -point.Y * ViewportHeight / 1.4;
             }
         }
 

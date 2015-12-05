@@ -135,7 +135,7 @@ namespace AngleInterpolation.Model
             gl.Color(255, 255, 255);
             gl.MatrixMode(MatrixMode.Modelview);
             gl.PushMatrix();
-            gl.Translate(position.X, position.Y, position.Z);
+            gl.Translate(position.X, position.Z, position.Y);
             gl.Rotate(rotation.X, 1, 0, 0);
             gl.Rotate(rotation.Y, 0, 1, 0);
             gl.Rotate(rotation.Z, 0, 0, 1);

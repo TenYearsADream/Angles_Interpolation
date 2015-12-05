@@ -59,7 +59,7 @@ namespace AngleInterpolation.View
         private void OpenGLControl_OnMouseMove(object sender, MouseEventArgs e)
         {
             if (_isMouseDown)
-                _viewModel.MouseMove(e);
+                _viewModel.MouseMove((IInputElement)sender, e);
         }
 
         private void OpenGLControl_OnMouseUp(object sender, MouseButtonEventArgs e)
