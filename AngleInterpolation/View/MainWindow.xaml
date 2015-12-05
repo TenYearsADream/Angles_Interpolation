@@ -67,9 +67,11 @@
         </Grid>
 
         <wpf:OpenGLControl Grid.Column="0" Grid.Row="1" Margin="5" OpenGLDraw="QuaternionOpenGLControl_OnOpenGLDraw" OpenGLInitialized="OpenGLControl_OnOpenGLInitialized" RenderContextType="FBO" 
+                           MouseDown="OpenGLControl_OnMouseDown" MouseMove="OpenGLControl_OnMouseMove" MouseUp="OpenGLControl_OnMouseUp" MouseWheel="OpenGLControl_OnMouseWheel"
                            viewModel:SizeObserver.Observe="True" viewModel:SizeObserver.ObservedWidth="{Binding ViewportWidth, Mode=OneWayToSource}" viewModel:SizeObserver.ObservedHeight="{Binding ViewportHeight, Mode=OneWayToSource}"/>
 
         <wpf:OpenGLControl Grid.Column="1" Grid.Row="1" Margin="5" OpenGLDraw="EulerOpenGLControl_OnOpenGLDraw" OpenGLInitialized="OpenGLControl_OnOpenGLInitialized" RenderContextType="FBO" 
+                           MouseDown="OpenGLControl_OnMouseDown" MouseMove="OpenGLControl_OnMouseMove" MouseUp="OpenGLControl_OnMouseUp" MouseWheel="OpenGLControl_OnMouseWheel"
                            viewModel:SizeObserver.Observe="True" viewModel:SizeObserver.ObservedWidth="{Binding ViewportWidth, Mode=OneWayToSource}" viewModel:SizeObserver.ObservedHeight="{Binding ViewportHeight, Mode=OneWayToSource}"/>
 
     </Grid>

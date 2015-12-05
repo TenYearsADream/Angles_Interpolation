@@ -1,4 +1,6 @@
-﻿using AngleInterpolation.ViewModel;
+﻿using System.Windows;
+using System.Windows.Input;
+using AngleInterpolation.ViewModel;
 using SharpGL;
 using SharpGL.SceneGraph;
 
@@ -10,6 +12,7 @@ namespace AngleInterpolation.View
     public partial class MainWindow
     {
         private MainViewModel _viewModel;
+        private bool _isMouseDown;
 
         public MainWindow()
         {
@@ -45,6 +48,28 @@ namespace AngleInterpolation.View
             gl.Enable(OpenGL.GL_LIGHT0);
 
             gl.ShadeModel(OpenGL.GL_SMOOTH);
+        }
+
+        private void OpenGLControl_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            _isMouseDown = true;
+            _viewModel.MouseDown((IInputElement)sender, e);
+        }
+
+        private void OpenGLControl_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (_isMouseDown)
+                _viewModel.MouseMove(e);
+        }
+
+        private void OpenGLControl_OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            _isMouseDown = false;
+        }
+
+        private void OpenGLControl_OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            _viewModel.MouseWheelMove(e);
         }
     }
 }

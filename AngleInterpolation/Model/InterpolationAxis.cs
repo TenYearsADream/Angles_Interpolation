@@ -72,13 +72,20 @@ namespace AngleInterpolation.Model
 
         public void ShowAllFrames(int animationTime, int frameCount)
         {
-            double timeDelta = animationTime / (frameCount + 1.0);
+            if (frameCount < 2) return;
+
+            double timeDelta = animationTime / (frameCount - 1.0);
             _frames = new List<Tuple<Vector3, Vector3>>();
 
-            for (int i = 0; i < frameCount; i++)
+            var lastPosition = Position;
+            var lastRotation = Rotation;
+
+            for (int i = 1; i < frameCount - 1; i++)
             {
-                var position = UpdatePosition(StartPosition, EndPosition, Position, i * timeDelta, animationTime, PositionDelta);
-                var rotation = UpdatePosition(StartRotation, EndRotation, Rotation, i * timeDelta, animationTime, AngleDelta);
+                var position = Lerp(StartPosition, EndPosition, lastPosition, i * timeDelta, animationTime, PositionDelta);
+                var rotation = UpdatePosition(StartRotation, EndRotation, lastRotation, i * timeDelta, animationTime, AngleDelta);
+                lastPosition = position;
+                lastRotation = rotation;
                 _frames.Add(new Tuple<Vector3, Vector3>(position, rotation));
             }
         }
