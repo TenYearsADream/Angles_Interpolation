@@ -14,10 +14,6 @@ namespace AngleInterpolation.Model
 
         #region Protected Members
 
-        protected const double PositionDelta = 0.01;
-
-        protected const double AngleDelta = 2.0;
-
         #endregion Protected Members
 
         #region Protected Properties
@@ -47,11 +43,11 @@ namespace AngleInterpolation.Model
 
         #region Protected Methods
 
-        protected abstract Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime, double epsilon);
+        protected abstract Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime);
 
-        protected Vector3 Lerp(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime, double epsilon)
+        protected Vector3 Lerp(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime)
         {
-            if ((destination - position).Length < epsilon || t >= animationTime) return position;
+            if (t >= animationTime) return position;
             return (start + t * (destination - start) / animationTime);
         }
 
@@ -82,8 +78,8 @@ namespace AngleInterpolation.Model
 
             for (int i = 1; i < frameCount - 1; i++)
             {
-                var position = Lerp(StartPosition, EndPosition, lastPosition, i * timeDelta, animationTime, PositionDelta);
-                var rotation = UpdatePosition(StartRotation, EndRotation, lastRotation, i * timeDelta, animationTime, AngleDelta);
+                var position = Lerp(StartPosition, EndPosition, lastPosition, i * timeDelta, animationTime);
+                var rotation = UpdatePosition(StartRotation, EndRotation, lastRotation, i * timeDelta, animationTime);
                 lastPosition = position;
                 lastRotation = rotation;
                 _frames.Add(new Tuple<Vector3, Vector3>(position, rotation));

@@ -54,22 +54,22 @@ namespace AngleInterpolation.Model
             return x;
         }
 
-        private Vector3 Slerp(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime, double epsilon)
+        private Vector3 Slerp(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime)
         {
-            if ((destination - position).Length < epsilon || t >= animationTime) return position;
+            if (t >= animationTime) return position;
 
             var cosTheta = start.Dot(destination);
 
             if (cosTheta > DotThreshold)
             {
-                var interpolation = start + (destination - start) * t / 100.0;
+                var interpolation = start + (destination - start) * t / animationTime;
                 interpolation = interpolation.Normalized;
                 return interpolation;
             }
 
             cosTheta = Clamp(cosTheta, -1, 1);
             var theta0 = Math.Acos(cosTheta);
-            var theta = theta0 * t / 5000;
+            var theta = theta0 * t / animationTime;
 
             var result = destination - (start * cosTheta);
             if (result.Length != 0)
@@ -82,11 +82,11 @@ namespace AngleInterpolation.Model
         #region Protected Methods
 
         // http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
-        protected override Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime, double epsilon)
+        protected override Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime)
         {
             if (InterpolationType == InterpolationType.Lerp)
-                return Lerp(start, destination, position, t, animationTime, epsilon);
-            return Slerp(start, destination, position, t, animationTime, epsilon);
+                return Lerp(start, destination, position, t, animationTime);
+            return Slerp(start, destination, position, t, animationTime);
         }
 
         #endregion Protected Methods
@@ -95,8 +95,8 @@ namespace AngleInterpolation.Model
 
         public override void UpdatePosition(double t, int animationTime)
         {
-            Position = Lerp(StartPosition, EndPosition, Position, t, animationTime, PositionDelta);
-            Rotation = UpdatePosition(StartRotation, EndRotation, Rotation, t, animationTime, AngleDelta);
+            Position = Lerp(StartPosition, EndPosition, Position, t, animationTime);
+            Rotation = UpdatePosition(StartRotation, EndRotation, Rotation, t, animationTime);
         }
 
         #endregion Public Methods

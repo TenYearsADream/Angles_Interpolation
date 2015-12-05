@@ -21,9 +21,9 @@ namespace AngleInterpolation.Model
 
         #endregion Constructors
 
-        protected override Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime, double epsilon)
+        protected override Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime)
         {
-            if ((destination - position).Length < epsilon || t >= animationTime) return position;
+            if (t >= animationTime) return position;
 
             var alpha = (destination - start) * t / animationTime;
 
@@ -38,8 +38,8 @@ namespace AngleInterpolation.Model
 
         public override void UpdatePosition(double t, int animationTime)
         {
-            Position = Lerp(StartPosition, EndPosition, Position, t, animationTime, PositionDelta);
-            Rotation = UpdatePosition(StartRotation, EndRotation, Rotation, t, animationTime, AngleDelta);
+            Position = Lerp(StartPosition, EndPosition, Position, t, animationTime);
+            Rotation = UpdatePosition(StartRotation, EndRotation, Rotation, t, animationTime);
         }
     }
 }
