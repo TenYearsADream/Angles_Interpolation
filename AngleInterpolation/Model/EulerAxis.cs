@@ -21,9 +21,25 @@ namespace AngleInterpolation.Model
 
         #endregion Constructors
 
-        protected override Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, TimeSpan t, double epsilon)
+        protected override Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime, double epsilon)
         {
-            return Position;
+            if ((destination - position).Length < epsilon || t >= animationTime) return position;
+
+            var alpha = (destination - start) * t / animationTime;
+
+            return position * new[,]{{Math.Cos(alpha.X),Math.Sin(alpha.X),0},
+                                      {-Math.Sin(alpha.X),Math.Cos(alpha.X), 0},
+                                      {0,0,1}};
+
+            //return position * new[,]{{((Math.Cos(alpha.X) * Math.Cos(alpha.Z)) - (Math.Sin(alpha.X) * Math.Sin(alpha.Z) * Math.Cos(alpha.Y))), ((Math.Sin(alpha.X) * Math.Cos(alpha.Z)) + (Math.Cos(alpha.X) * Math.Sin(alpha.Z) * Math.Cos(alpha.Y))), (Math.Sin(alpha.Z * Math.Sin(alpha.Y)))},
+            //                             {(-(Math.Cos(alpha.X) * Math.Sin(alpha.Z)) - (Math.Sin(alpha.X) * Math.Cos(alpha.Z) * Math.Cos(alpha.Y))), (-(Math.Sin(alpha.X) * Math.Sin(alpha.Z)) + (Math.Cos(alpha.X) * Math.Cos(alpha.Z) * Math.Cos(alpha.Y))), (Math.Cos(alpha.Z) * Math.Sin(alpha.Y))},
+            //                             {(Math.Sin(alpha.X) * Math.Sin(alpha.Y)), (-Math.Cos(alpha.X) * Math.Sin(alpha.Y)), Math.Cos(alpha.Y)}};
+        }
+
+        public override void UpdatePosition(double t, int animationTime)
+        {
+            Position = Lerp(StartPosition, EndPosition, Position, t, animationTime, PositionDelta);
+            Rotation = UpdatePosition(StartRotation, EndRotation, Rotation, t, animationTime, AngleDelta);
         }
     }
 }

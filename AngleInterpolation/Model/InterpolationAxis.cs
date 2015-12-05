@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Windows.Documents;
+using System.Collections.Generic;
 using SharpGL;
 
 namespace AngleInterpolation.Model
@@ -8,12 +8,17 @@ namespace AngleInterpolation.Model
     {
         #region Private Members
 
-        private const double PositionDelta = 0.01;
-        private const double AngleDelta = 2.0;
-
-        //private List
+        private List<Tuple<Vector3, Vector3>> _frames;
 
         #endregion Private Members
+
+        #region Protected Members
+
+        protected const double PositionDelta = 0.01;
+
+        protected const double AngleDelta = 2.0;
+
+        #endregion Protected Members
 
         #region Protected Properties
 
@@ -42,26 +47,41 @@ namespace AngleInterpolation.Model
 
         #region Protected Methods
 
-        protected abstract Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, TimeSpan t, double epsilon);
+        protected abstract Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime, double epsilon);
+
+        protected Vector3 Lerp(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime, double epsilon)
+        {
+            if ((destination - position).Length < epsilon || t >= animationTime) return position;
+            return (start + t * (destination - start) / animationTime);
+        }
 
         #endregion Protected Methods
 
         #region Public Methods
 
-        public void UpdatePosition(TimeSpan t)
-        {
-            Position = UpdatePosition(StartPosition, EndPosition, Position, t, PositionDelta);
-            Rotation = UpdatePosition(StartRotation, EndRotation, Rotation, t, AngleDelta);
-        }
+        public abstract void UpdatePosition(double t, int animationTime);
 
         public override void Render(OpenGL gl)
         {
             base.Render(gl);
             Render(gl, EndPosition, EndRotation);
+            if (_frames != null)
+                foreach (var frame in _frames)
+                    Render(gl, frame.Item1, frame.Item2);
         }
 
-        public void ShowAllFrames()
-        {}
+        public void ShowAllFrames(int animationTime, int frameCount)
+        {
+            double timeDelta = animationTime / (frameCount + 1.0);
+            _frames = new List<Tuple<Vector3, Vector3>>();
+
+            for (int i = 0; i < frameCount; i++)
+            {
+                var position = UpdatePosition(StartPosition, EndPosition, Position, i * timeDelta, animationTime, PositionDelta);
+                var rotation = UpdatePosition(StartRotation, EndRotation, Rotation, i * timeDelta, animationTime, AngleDelta);
+                _frames.Add(new Tuple<Vector3, Vector3>(position, rotation));
+            }
+        }
 
         #endregion Public Methods
 

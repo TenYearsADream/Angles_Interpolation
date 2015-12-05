@@ -25,6 +25,8 @@ namespace AngleInterpolation.ViewModel
         private DelegateCommand _resetAnimationCommand;
         private DelegateCommand _showAllFramesCommand;
 
+        private const int AnimationTime = 10000;
+
         private DispatcherTimer _timer;
         private DateTime _timerStartTime;
         private double _viewportHeight;
@@ -192,16 +194,16 @@ namespace AngleInterpolation.ViewModel
         private void ShowAllFrames(object obj)
         {
             ResetAnimation(obj);
-            _quaternionAxis.ShowAllFrames();
-            _eulerAxis.ShowAllFrames();
+            _quaternionAxis.ShowAllFrames(AnimationTime, FrameCount);
+            _eulerAxis.ShowAllFrames(AnimationTime, FrameCount);
         }
 
         private void _timer_Tick(object sender, EventArgs e)
         {
-            var timeDelta = DateTime.Now - _timerStartTime;
+            var timeDelta = (DateTime.Now - _timerStartTime).TotalMilliseconds;
 
-            _quaternionAxis.UpdatePosition(timeDelta);
-            _eulerAxis.UpdatePosition(timeDelta);
+            _quaternionAxis.UpdatePosition(timeDelta, AnimationTime);
+            _eulerAxis.UpdatePosition(timeDelta, AnimationTime);
         }
 
         #endregion Private Methods

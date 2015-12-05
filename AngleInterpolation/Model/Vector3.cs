@@ -102,6 +102,16 @@ namespace AngleInterpolation.Model
         {
             return new Vector3(vector.X - vector1.X, vector.Y - vector1.Y, vector.Z - vector1.Z);
         }
+
+        public static Vector3 operator *(Vector3 vector, double[,] matrix)
+        {
+            if (matrix.GetLength(0) != 3 || matrix.GetLength(1) != 3)
+                throw new Exception("Matrix dimensions should be 3x3");
+
+            return new Vector3(vector.X * matrix[0, 0] + vector.Y * matrix[0, 1] + vector.Z * matrix[0, 2]
+                               , vector.X * matrix[1, 0] + vector.Y * matrix[1, 1] + vector.Z * matrix[1, 2]
+                               , vector.X * matrix[2, 0] + vector.Y * matrix[2, 1] + vector.Z * matrix[2, 2]);
+        }
     }
 }
 

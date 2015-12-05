@@ -54,22 +54,22 @@ namespace AngleInterpolation.Model
             return x;
         }
 
-        private Vector3 Slerp(Vector3 start, Vector3 destination, Vector3 position, TimeSpan t, double epsilon)
+        private Vector3 Slerp(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime, double epsilon)
         {
-            if ((destination - position).Length < epsilon) return position;
+            if ((destination - position).Length < epsilon || t >= animationTime) return position;
 
             var cosTheta = start.Dot(destination);
 
             if (cosTheta > DotThreshold)
             {
-                var interpolation = start + (destination - start) * t.TotalMilliseconds / 100.0;
+                var interpolation = start + (destination - start) * t / 100.0;
                 interpolation = interpolation.Normalized;
                 return interpolation;
             }
-            
+
             cosTheta = Clamp(cosTheta, -1, 1);
             var theta0 = Math.Acos(cosTheta);
-            var theta = theta0 * t.TotalMilliseconds / 5000;
+            var theta = theta0 * t / 5000;
 
             var result = destination - (start * cosTheta);
             if (result.Length != 0)
@@ -77,28 +77,27 @@ namespace AngleInterpolation.Model
             return (start * Math.Cos(theta)) + (result * Math.Sin(theta));
         }
 
-        private Vector3 Lerp(Vector3 start, Vector3 destination, Vector3 position, TimeSpan t, double epsilon)
-        {
-            if ((destination - position).Length < epsilon * 2) return position;
-            return (start + t.TotalMilliseconds * (destination - start) / 10000);
-        }
-
         #endregion Private Methods
 
         #region Protected Methods
 
         // http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
-        protected override Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, TimeSpan t, double epsilon)
+        protected override Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime, double epsilon)
         {
             if (InterpolationType == InterpolationType.Lerp)
-                return Lerp(start, destination, position, t, epsilon);
-            return Slerp(start, destination, position, t, epsilon);
+                return Lerp(start, destination, position, t, animationTime, epsilon);
+            return Slerp(start, destination, position, t, animationTime, epsilon);
         }
 
         #endregion Protected Methods
 
         #region Public Methods
 
+        public override void UpdatePosition(double t, int animationTime)
+        {
+            Position = Lerp(StartPosition, EndPosition, Position, t, animationTime, PositionDelta);
+            Rotation = UpdatePosition(StartRotation, EndRotation, Rotation, t, animationTime, AngleDelta);
+        }
 
         #endregion Public Methods
     }
