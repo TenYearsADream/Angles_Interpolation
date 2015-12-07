@@ -58,6 +58,10 @@
 
             <StackPanel Grid.Column="5" Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Animation length (s): "/>
+                    <TextBox Text="{Binding AnimationLength}" VerticalAlignment="Top"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Frame count: "/>
                     <TextBox Text="{Binding FrameCount}" VerticalAlignment="Top"/>
                 </StackPanel>

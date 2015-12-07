@@ -11,9 +11,8 @@ namespace AngleInterpolation.Model
     {
         #region Private Members
 
-        private const double DotThreshold = 0.9995;
-
         private InterpolationType _interpolationType;
+        private const double Epsilon = 0.001;
 
         #endregion Private Members
 
@@ -60,21 +59,24 @@ namespace AngleInterpolation.Model
 
             var cosTheta = start.Dot(destination);
 
-            if (cosTheta > DotThreshold)
+            if (Math.Abs(Math.Abs(cosTheta) - 1.0) < Epsilon)
+                return start;
+
+            if (cosTheta < 0)
             {
-                var interpolation = start + (destination - start) * t / animationTime;
-                interpolation = interpolation.Normalized;
-                return interpolation;
+                cosTheta *= -1;
+                destination *= -1;
             }
 
             cosTheta = Clamp(cosTheta, -1, 1);
-            var theta0 = Math.Acos(cosTheta);
-            var theta = theta0 * t / animationTime;
+            var theta = Math.Acos(cosTheta);
+            if (Math.Abs(theta) < Epsilon)
+                return start;
 
-            var result = destination - (start * cosTheta);
-            if (result.Length != 0)
-                result = result.Normalized;
-            return (start * Math.Cos(theta)) + (result * Math.Sin(theta));
+            start *= Math.Sin((1 - (t / animationTime)) * theta) / Math.Sin(theta);
+            destination *= Math.Sin(theta * (t / animationTime)) / Math.Sin(theta);
+            start += destination;
+            return start;
         }
 
         #endregion Private Methods

@@ -32,8 +32,6 @@ namespace AngleInterpolation.ViewModel
         private DelegateCommand _showAllFramesCommand;
         private DelegateCommand _resetViewportCommand;
 
-        private const int AnimationTime = 10000;
-
         private DispatcherTimer _timer;
         private DateTime _timerStartTime;
         private double _viewportHeight;
@@ -42,6 +40,7 @@ namespace AngleInterpolation.ViewModel
         double[] _modelview = new double[16];
         double[] _projection = new double[16];
         int[] _viewport = new int[4];
+        private int _animationLength;
 
         #endregion Private Members
 
@@ -118,6 +117,20 @@ namespace AngleInterpolation.ViewModel
         }
 
         /// <summary>
+        /// Gets or sets the Animation Length.
+        /// </summary>
+        public int AnimationLength
+        {
+            get { return _animationLength; }
+            set
+            {
+                if (_animationLength == value) return;
+                _animationLength = value;
+                OnPropertyChanged("AnimationLength");
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the frame count.
         /// </summary>
         public int FrameCount
@@ -180,6 +193,7 @@ namespace AngleInterpolation.ViewModel
 
             _timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 10) };
             _timer.Tick += _timer_Tick;
+            AnimationLength = 5;
 
             FrameCount = 3;
         }
@@ -232,8 +246,8 @@ namespace AngleInterpolation.ViewModel
         private void ShowAllFrames(object obj)
         {
             ResetAnimation(obj);
-            _quaternionAxis.ShowAllFrames(AnimationTime, FrameCount);
-            _eulerAxis.ShowAllFrames(AnimationTime, FrameCount);
+            _quaternionAxis.ShowAllFrames(AnimationLength * 1000, FrameCount);
+            _eulerAxis.ShowAllFrames(AnimationLength * 1000, FrameCount);
         }
 
         private Point FindPointPositionInViewport()
@@ -298,8 +312,8 @@ namespace AngleInterpolation.ViewModel
         {
             var timeDelta = (DateTime.Now - _timerStartTime).TotalMilliseconds;
 
-            _quaternionAxis.UpdatePosition(timeDelta, AnimationTime);
-            _eulerAxis.UpdatePosition(timeDelta, AnimationTime);
+            _quaternionAxis.UpdatePosition(timeDelta, AnimationLength * 1000);
+            _eulerAxis.UpdatePosition(timeDelta, AnimationLength * 1000);
         }
 
         #endregion Private Methods

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AngleInterpolation.Model
+﻿namespace AngleInterpolation.Model
 {
     /// <summary>
     /// http://ogre3d.org/tikiwiki/Euler+Angle+Class
@@ -25,15 +23,7 @@ namespace AngleInterpolation.Model
         {
             if (t >= animationTime) return position;
 
-            var alpha = (destination - start) * t / animationTime;
-
-            return position * new[,]{{Math.Cos(alpha.X),Math.Sin(alpha.X),0},
-                                      {-Math.Sin(alpha.X),Math.Cos(alpha.X), 0},
-                                      {0,0,1}};
-
-            //return position * new[,]{{((Math.Cos(alpha.X) * Math.Cos(alpha.Z)) - (Math.Sin(alpha.X) * Math.Sin(alpha.Z) * Math.Cos(alpha.Y))), ((Math.Sin(alpha.X) * Math.Cos(alpha.Z)) + (Math.Cos(alpha.X) * Math.Sin(alpha.Z) * Math.Cos(alpha.Y))), (Math.Sin(alpha.Z * Math.Sin(alpha.Y)))},
-            //                             {(-(Math.Cos(alpha.X) * Math.Sin(alpha.Z)) - (Math.Sin(alpha.X) * Math.Cos(alpha.Z) * Math.Cos(alpha.Y))), (-(Math.Sin(alpha.X) * Math.Sin(alpha.Z)) + (Math.Cos(alpha.X) * Math.Cos(alpha.Z) * Math.Cos(alpha.Y))), (Math.Cos(alpha.Z) * Math.Sin(alpha.Y))},
-            //                             {(Math.Sin(alpha.X) * Math.Sin(alpha.Y)), (-Math.Cos(alpha.X) * Math.Sin(alpha.Y)), Math.Cos(alpha.Y)}};
+            return (destination - start) * (t / animationTime) + start;
         }
 
         public override void UpdatePosition(double t, int animationTime)
