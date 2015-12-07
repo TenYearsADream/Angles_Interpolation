@@ -193,9 +193,9 @@ namespace AngleInterpolation.ViewModel
 
             _timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 10) };
             _timer.Tick += _timer_Tick;
-            AnimationLength = 5;
+            AnimationLength = 7;
 
-            FrameCount = 3;
+            FrameCount = 13;
         }
 
         #endregion Constructors
@@ -355,8 +355,21 @@ namespace AngleInterpolation.ViewModel
         {
             if (eventArgs.RightButton == MouseButtonState.Pressed)
             {
-                _rotation.X += (eventArgs.GetPosition(sender).X - _previousMousePosition.X) / 2.0;
-                _rotation.Y += (eventArgs.GetPosition(sender).Y - _previousMousePosition.Y) / 2.0;
+                if (Keyboard.IsKeyDown(Key.S))
+                {
+                    StartAxis.Rotation.X += (eventArgs.GetPosition(sender).X - _previousMousePosition.X) / 2.0;
+                    StartAxis.Rotation.Y += (eventArgs.GetPosition(sender).Y - _previousMousePosition.Y) / 2.0;
+                }
+                else if (Keyboard.IsKeyDown(Key.E))
+                {
+                    EndAxis.Rotation.X += (eventArgs.GetPosition(sender).X - _previousMousePosition.X) / 2.0;
+                    EndAxis.Rotation.Y += (eventArgs.GetPosition(sender).Y - _previousMousePosition.Y) / 2.0;
+                }
+                else
+                {
+                    _rotation.X += (eventArgs.GetPosition(sender).X - _previousMousePosition.X) / 2.0;
+                    _rotation.Y += (eventArgs.GetPosition(sender).Y - _previousMousePosition.Y) / 2.0;
+                }
 
                 _previousMousePosition = eventArgs.GetPosition(sender);
             }
@@ -365,6 +378,8 @@ namespace AngleInterpolation.ViewModel
         public void MouseDown(IInputElement sender, MouseButtonEventArgs eventArgs)
         {
             _previousMousePosition = eventArgs.GetPosition(sender);
+
+            if (eventArgs.LeftButton != MouseButtonState.Pressed) return;
 
             if (Keyboard.IsKeyDown(Key.S))
             {

@@ -55,7 +55,7 @@ namespace AngleInterpolation.Model
 
         private Vector3 Slerp(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime)
         {
-            if (t >= animationTime) return position;
+            if (t >= animationTime) return destination;
 
             var cosTheta = start.Dot(destination);
 
@@ -97,7 +97,7 @@ namespace AngleInterpolation.Model
 
         public override void UpdatePosition(double t, int animationTime)
         {
-            Position = Lerp(StartPosition, EndPosition, Position, t, animationTime);
+            base.UpdatePosition(t, animationTime);
             Rotation = UpdatePosition(StartRotation, EndRotation, Rotation, t, animationTime);
         }
 

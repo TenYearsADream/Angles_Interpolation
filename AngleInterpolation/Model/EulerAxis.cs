@@ -21,14 +21,14 @@
 
         protected override Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime)
         {
-            if (t >= animationTime) return position;
+            if (t >= animationTime) return destination;
 
             return (destination - start) * (t / animationTime) + start;
         }
 
         public override void UpdatePosition(double t, int animationTime)
         {
-            Position = Lerp(StartPosition, EndPosition, Position, t, animationTime);
+            base.UpdatePosition(t, animationTime);
             Rotation = UpdatePosition(StartRotation, EndRotation, Rotation, t, animationTime);
         }
     }

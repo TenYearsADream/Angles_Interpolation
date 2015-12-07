@@ -55,7 +55,10 @@ namespace AngleInterpolation.Model
 
         #region Public Methods
 
-        public abstract void UpdatePosition(double t, int animationTime);
+        public virtual void UpdatePosition(double t, int animationTime)
+        {
+            Position = Lerp(StartPosition, EndPosition, Position, t, animationTime);
+        }
 
         public override void Render(OpenGL gl)
         {
