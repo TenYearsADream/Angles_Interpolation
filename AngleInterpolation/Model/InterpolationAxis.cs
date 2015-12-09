@@ -4,7 +4,7 @@ using SharpGL;
 
 namespace AngleInterpolation.Model
 {
-    public abstract class InterpolationAxis : AxisDetails
+    public abstract class InterpolationAxis<T> : AxisDetails
     {
         #region Private Members
 
@@ -20,18 +20,18 @@ namespace AngleInterpolation.Model
 
         protected Vector3 StartPosition { get; private set; }
 
-        protected Vector3 StartRotation { get; private set; }
+        protected T StartRotation { get; private set; }
 
         protected Vector3 EndPosition { get; private set; }
 
-        protected Vector3 EndRotation { get; private set; }
+        protected T EndRotation { get; private set; }
 
         #endregion Protected Properties
 
         #region Constructors
 
-        public InterpolationAxis(Vector3 startPosition, Vector3 startRotation, Vector3 endPosition, Vector3 endRotation)
-            : base(startPosition, startRotation)
+        public InterpolationAxis(Vector3 startPosition, T startRotation, Vector3 startRotationVector, Vector3 endPosition, T endRotation)
+            : base(startPosition, startRotationVector)
         {
             StartPosition = startPosition;
             StartRotation = startRotation;
@@ -43,11 +43,13 @@ namespace AngleInterpolation.Model
 
         #region Protected Methods
 
-        protected abstract Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime);
+        protected abstract T UpdateRotation(T start, T destination, double t, int animationTime);
 
-        protected Vector3 Lerp(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime)
+        protected abstract Vector3 GetRotation(T rotation);
+
+        protected Vector3 Lerp(Vector3 start, Vector3 destination, double t, int animationTime)
         {
-            if (t >= animationTime) return position;
+            if (t >= animationTime) return destination;
             return (start + t * (destination - start) / animationTime);
         }
 
@@ -57,13 +59,13 @@ namespace AngleInterpolation.Model
 
         public virtual void UpdatePosition(double t, int animationTime)
         {
-            Position = Lerp(StartPosition, EndPosition, Position, t, animationTime);
+            Position = Lerp(StartPosition, EndPosition, t, animationTime);
         }
 
         public override void Render(OpenGL gl)
         {
             base.Render(gl);
-            Render(gl, EndPosition, EndRotation);
+            Render(gl, EndPosition, GetRotation(EndRotation));
             if (_frames != null)
                 foreach (var frame in _frames)
                     Render(gl, frame.Item1, frame.Item2);
@@ -76,16 +78,11 @@ namespace AngleInterpolation.Model
             double timeDelta = animationTime / (frameCount - 1.0);
             _frames = new List<Tuple<Vector3, Vector3>>();
 
-            var lastPosition = Position;
-            var lastRotation = Rotation;
-
             for (int i = 1; i < frameCount - 1; i++)
             {
-                var position = Lerp(StartPosition, EndPosition, lastPosition, i * timeDelta, animationTime);
-                var rotation = UpdatePosition(StartRotation, EndRotation, lastRotation, i * timeDelta, animationTime);
-                lastPosition = position;
-                lastRotation = rotation;
-                _frames.Add(new Tuple<Vector3, Vector3>(position, rotation));
+                var position = Lerp(StartPosition, EndPosition, i * timeDelta, animationTime);
+                var rotation = UpdateRotation(StartRotation, EndRotation, i * timeDelta, animationTime);
+                _frames.Add(new Tuple<Vector3, Vector3>(position, GetRotation(rotation)));
             }
         }
 

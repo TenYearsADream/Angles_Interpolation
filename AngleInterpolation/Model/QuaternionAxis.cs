@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Media.Media3D;
 
 namespace AngleInterpolation.Model
 {
@@ -7,7 +8,7 @@ namespace AngleInterpolation.Model
     /// http://web.mit.edu/2.998/www/QuaternionReport1.pdf
     /// http://blog.pixelingene.com/2006/09/smooth-3d-rotations-with-quaternions/
     /// </summary>
-    public class QuaternionAxis : InterpolationAxis
+    public class QuaternionAxis : InterpolationAxis<Vector4>
     {
         #region Private Members
 
@@ -36,8 +37,8 @@ namespace AngleInterpolation.Model
 
         #region Constructors
 
-        public QuaternionAxis(Vector3 startPosition, Vector3 startRotation, Vector3 endPosition, Vector3 endRotation)
-            : base(startPosition, startRotation, endPosition, endRotation)
+        public QuaternionAxis(Vector3 startPosition, Vector4 startRotation, Vector3 endPosition, Vector4 endRotation)
+            : base(startPosition, startRotation, startRotation.EulerAnglesFromQuaternion(), endPosition, endRotation)
         {
             _interpolationType = InterpolationType.Slerp;
         }
@@ -53,7 +54,7 @@ namespace AngleInterpolation.Model
             return x;
         }
 
-        private Vector3 Slerp(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime)
+        private Vector4 Slerp(Vector4 start, Vector4 destination, double t, int animationTime)
         {
             if (t >= animationTime) return destination;
 
@@ -84,11 +85,16 @@ namespace AngleInterpolation.Model
         #region Protected Methods
 
         // http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
-        protected override Vector3 UpdatePosition(Vector3 start, Vector3 destination, Vector3 position, double t, int animationTime)
+        protected override Vector4 UpdateRotation(Vector4 start, Vector4 destination, double t, int animationTime)
         {
             if (InterpolationType == InterpolationType.Lerp)
-                return Lerp(start, destination, position, t, animationTime);
-            return Slerp(start, destination, position, t, animationTime);
+                return Lerp(start.EulerAnglesFromQuaternion(), destination.EulerAnglesFromQuaternion(), t, animationTime).QuaternionFromEulerAngles();
+            return Slerp(start, destination, t, animationTime);
+        }
+
+        protected override Vector3 GetRotation(Vector4 rotation)
+        {
+            return rotation.EulerAnglesFromQuaternion();
         }
 
         #endregion Protected Methods
@@ -98,7 +104,7 @@ namespace AngleInterpolation.Model
         public override void UpdatePosition(double t, int animationTime)
         {
             base.UpdatePosition(t, animationTime);
-            Rotation = UpdatePosition(StartRotation, EndRotation, Rotation, t, animationTime);
+            Rotation = UpdateRotation(StartRotation, EndRotation, t, animationTime).EulerAnglesFromQuaternion();
         }
 
         #endregion Public Methods

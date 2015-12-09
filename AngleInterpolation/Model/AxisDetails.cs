@@ -15,6 +15,7 @@ namespace AngleInterpolation.Model
         private Vector3 _rotation;
 
         private uint _millDrawListId;
+        private Vector4 _quaternionRotation;
         private const int CylinderDivisions = 20;
         private const double Radius = 0.2;
         private const double Height = 2;
@@ -51,6 +52,20 @@ namespace AngleInterpolation.Model
             }
         }
 
+        /// <summary>
+        /// Gets or sets the quaternion rotation of the axis.
+        /// </summary>
+        public Vector4 QuaternionRotation
+        {
+            get { return _quaternionRotation; }
+            set
+            {
+                if (_quaternionRotation == value) return;
+                _quaternionRotation = value;
+                OnPropertyChanged("QuaternionRotation");
+            }
+        }
+
         #endregion Public Properties
 
         #region Constructors
@@ -60,6 +75,17 @@ namespace AngleInterpolation.Model
             Position = position;
             Rotation = rotation;
             _millDrawListId = uint.MinValue;
+            QuaternionRotation = rotation.QuaternionFromEulerAngles();
+            Rotation.PropertyChanged += (sender, args) =>
+            {
+                _quaternionRotation = _rotation.QuaternionFromEulerAngles();
+                OnPropertyChanged("QuaternionRotation");
+            };
+            QuaternionRotation.PropertyChanged += (sender, args) =>
+            {
+                _rotation = _quaternionRotation.EulerAnglesFromQuaternion();
+                OnPropertyChanged("Rotation");
+            };
         }
 
         #endregion Constructors

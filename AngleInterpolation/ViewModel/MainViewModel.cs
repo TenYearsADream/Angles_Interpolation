@@ -188,7 +188,7 @@ namespace AngleInterpolation.ViewModel
             StartAxis = new AxisDetails(new Vector3(-20, 0, 0), new Vector3(0, 0, 0));
             EndAxis = new AxisDetails(new Vector3(20, 0, -10), new Vector3(0, 0, 0));
 
-            _quaternionAxis = new QuaternionAxis(StartAxis.Position, StartAxis.Rotation, EndAxis.Position, EndAxis.Rotation);
+            _quaternionAxis = new QuaternionAxis(StartAxis.Position, StartAxis.QuaternionRotation, EndAxis.Position, EndAxis.QuaternionRotation);
             _eulerAxis = new EulerAxis(StartAxis.Position, StartAxis.Rotation, EndAxis.Position, EndAxis.Rotation);
 
             _timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 10) };
@@ -233,7 +233,7 @@ namespace AngleInterpolation.ViewModel
         {
             _timer.Stop();
 
-            _quaternionAxis = new QuaternionAxis(StartAxis.Position, StartAxis.Rotation, EndAxis.Position, EndAxis.Rotation);
+            _quaternionAxis = new QuaternionAxis(StartAxis.Position, StartAxis.QuaternionRotation, EndAxis.Position, EndAxis.QuaternionRotation);
             _eulerAxis = new EulerAxis(StartAxis.Position, StartAxis.Rotation, EndAxis.Position, EndAxis.Rotation);
         }
 

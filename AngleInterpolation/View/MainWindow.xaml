@@ -25,9 +25,9 @@
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -38,8 +38,17 @@
                 <view:PositionControl DataContext="{Binding StartAxis.Position}"/>
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Vertical">
-                <TextBlock Text="Start Rotation"/>
-                <view:PositionControl DataContext="{Binding StartAxis.Rotation}"/>
+                        <TextBlock Text="Start Rotation"/>
+                <StackPanel Orientation="Horizontal">
+                    <view:PositionControl DataContext="{Binding StartAxis.Rotation}" Margin="0, 0, 50, 0"/>
+                    <StackPanel Orientation="Vertical">
+                        <view:PositionControl DataContext="{Binding StartAxis.QuaternionRotation}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="W: "/>
+                            <TextBox Text="{Binding StartAxis.QuaternionRotation.W}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
             </StackPanel>
             <StackPanel Grid.Column="2" Orientation="Vertical">
                 <TextBlock Text="End Position"/>
@@ -47,7 +56,16 @@
             </StackPanel>
             <StackPanel Grid.Column="3" Orientation="Vertical">
                 <TextBlock Text="End Rotation"/>
-                <view:PositionControl DataContext="{Binding EndAxis.Rotation}"/>
+                <StackPanel Orientation="Horizontal">
+                    <view:PositionControl DataContext="{Binding EndAxis.Rotation}" Margin="0, 0, 50, 0"/>
+                    <StackPanel Orientation="Vertical">
+                        <view:PositionControl DataContext="{Binding EndAxis.QuaternionRotation}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="W: "/>
+                            <TextBox Text="{Binding EndAxis.QuaternionRotation.W}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
             </StackPanel>
 
             <StackPanel Grid.Column="4" Orientation="Vertical">

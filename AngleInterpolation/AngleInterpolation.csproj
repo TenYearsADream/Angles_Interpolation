@@ -62,9 +62,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\Extensions.cs" />
     <Compile Include="Model\InterpolationType.cs" />
     <Compile Include="Model\InterpolationTypeConverter.cs" />
     <Compile Include="Model\Vector3.cs" />
+    <Compile Include="Model\Vector4.cs" />
     <Compile Include="ViewModel\DebugConverter.cs" />
     <Compile Include="Model\AxisDetails.cs" />
     <Compile Include="Model\InterpolationAxis.cs" />
