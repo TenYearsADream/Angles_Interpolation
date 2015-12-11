@@ -20,6 +20,9 @@ namespace AngleInterpolation.Model
         private const double Radius = 0.2;
         private const double Height = 2;
 
+        private bool _shouldRecalculateEuler;
+        private bool _shouldRecalculateQuaternion;
+
         #endregion Private Members
 
         #region Public Properties
@@ -78,14 +81,32 @@ namespace AngleInterpolation.Model
             QuaternionRotation = rotation.QuaternionFromEulerAngles();
             Rotation.PropertyChanged += (sender, args) =>
             {
-                _quaternionRotation = _rotation.QuaternionFromEulerAngles();
+                if (!_shouldRecalculateEuler) return;
+                _shouldRecalculateEuler = false;
+                _shouldRecalculateQuaternion = false;
+                Rotation.ClampValues();
+                var r = _rotation.QuaternionFromEulerAngles();
+                _quaternionRotation.SetValues(r);
                 OnPropertyChanged("QuaternionRotation");
+                _quaternionRotation.RaisePropertyChanged();
+                _shouldRecalculateEuler = true;
+                _shouldRecalculateQuaternion = true;
             };
             QuaternionRotation.PropertyChanged += (sender, args) =>
             {
-                _rotation = _quaternionRotation.EulerAnglesFromQuaternion();
+                if (!_shouldRecalculateQuaternion) return;
+                _shouldRecalculateEuler = false;
+                _shouldRecalculateQuaternion = false;
+                QuaternionRotation = QuaternionRotation.Normalized;
+                var r = _quaternionRotation.EulerAnglesFromQuaternion();
+                _rotation.SetValues(r);
                 OnPropertyChanged("Rotation");
+                _rotation.RaisePropertyChanged();
+                _shouldRecalculateEuler = true;
+                _shouldRecalculateQuaternion = true;
             };
+            _shouldRecalculateEuler = true;
+            _shouldRecalculateQuaternion = true;
         }
 
         #endregion Constructors

@@ -112,6 +112,27 @@ namespace AngleInterpolation.Model
                                , vector.X * matrix[1, 0] + vector.Y * matrix[1, 1] + vector.Z * matrix[1, 2]
                                , vector.X * matrix[2, 0] + vector.Y * matrix[2, 1] + vector.Z * matrix[2, 2]);
         }
+
+        public void ClampValues()
+        {
+            _x = ((_x % 360) + 360) % 360;
+            _y = ((_y % 360) + 360) % 360;
+            _z = ((_z % 360) + 360) % 360;
+        }
+
+        public void SetValues(Vector3 v)
+        {
+            _x = v.X;
+            _y = v.Y;
+            _z = v.Z;
+        }
+
+        public void RaisePropertyChanged()
+        {
+            OnPropertyChanged("X");
+            OnPropertyChanged("Y");
+            OnPropertyChanged("Z");
+        }
     }
 }
 

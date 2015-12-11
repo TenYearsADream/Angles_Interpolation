@@ -16,16 +16,16 @@ namespace AngleInterpolation.Model
             _w = w;
         }
 
-        public double X { get { return _x; } set { _x = value; OnPropertyChanged("X"); } }
-        public double Y { get { return _y; } set { _y = value; OnPropertyChanged("Y"); } }
-        public double Z { get { return _z; } set { _z = value; OnPropertyChanged("Z"); } }
-        public double W { get { return _w; } set { _w = value; OnPropertyChanged("W"); } }
+        public double X { get { return _x; } set { if (_x == value)return; _x = value; OnPropertyChanged("X"); } }
+        public double Y { get { return _y; } set { if (_y == value)return; _y = value; OnPropertyChanged("Y"); } }
+        public double Z { get { return _z; } set { if (_z == value)return; _z = value; OnPropertyChanged("Z"); } }
+        public double W { get { return _w; } set { if (_w == value)return; _w = value; OnPropertyChanged("W"); } }
 
-        public double Length { get { return Math.Sqrt(_x * _x + _y * _y + _z * _z + _w * _w); } }
+        public double Length { get { return Math.Sqrt(LengthSquared); } }
 
         public double LengthSquared { get { return _x * _x + _y * _y + _z * _z + _w * _w; } }
 
-        public Vector4 Normalized { get { return this / Math.Sqrt(_x * _x + _y * _y + _z * _z); } }
+        public Vector4 Normalized { get { return this / Length; } }
 
         public double Dot(Vector4 vector)
         {
@@ -87,6 +87,22 @@ namespace AngleInterpolation.Model
                                 , vector.X * matrix[1, 0] + vector.Y * matrix[1, 1] + vector.Z * matrix[1, 2] + vector.W * matrix[1, 3]
                                 , vector.X * matrix[2, 0] + vector.Y * matrix[2, 1] + vector.Z * matrix[2, 2] + vector.W * matrix[2, 3]
                                 , vector.X * matrix[3, 0] + vector.Y * matrix[3, 1] + vector.Z * matrix[3, 2] + vector.W * matrix[3, 3]);
+        }
+
+        public void SetValues(Vector4 v)
+        {
+            _x = v.X;
+            _y = v.Y;
+            _z = v.Z;
+            _w = v.W;
+        }
+
+        public void RaisePropertyChanged()
+        {
+            OnPropertyChanged("X");
+            OnPropertyChanged("Y");
+            OnPropertyChanged("Z");
+            OnPropertyChanged("W");
         }
     }
 

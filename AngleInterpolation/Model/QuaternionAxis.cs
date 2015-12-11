@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Media.Media3D;
 
 namespace AngleInterpolation.Model
 {
@@ -47,13 +46,6 @@ namespace AngleInterpolation.Model
 
         #region Private Methods
 
-        private double Clamp(double x, double min, double max)
-        {
-            if (x < min) x = min;
-            if (x > max) x = max;
-            return x;
-        }
-
         private Vector4 Slerp(Vector4 start, Vector4 destination, double t, int animationTime)
         {
             if (t >= animationTime) return destination;
@@ -69,7 +61,7 @@ namespace AngleInterpolation.Model
                 destination *= -1;
             }
 
-            cosTheta = Clamp(cosTheta, -1, 1);
+            cosTheta = cosTheta.Clamp(-1, 1);
             var theta = Math.Acos(cosTheta);
             if (Math.Abs(theta) < Epsilon)
                 return start;
