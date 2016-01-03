@@ -14,7 +14,7 @@ namespace AngleInterpolation.Model
         private Vector3 _position;
         private Vector3 _rotation;
 
-        private uint _millDrawListId;
+        private uint _axisDrawListId;
         private Vector4 _quaternionRotation;
         private const int CylinderDivisions = 20;
         private const double Radius = 0.2;
@@ -77,7 +77,7 @@ namespace AngleInterpolation.Model
         {
             Position = position;
             Rotation = rotation;
-            _millDrawListId = uint.MinValue;
+            _axisDrawListId = uint.MinValue;
             QuaternionRotation = rotation.QuaternionFromEulerAngles();
             Rotation.PropertyChanged += (sender, args) =>
             {
@@ -116,8 +116,8 @@ namespace AngleInterpolation.Model
         private void CreateDrawList(OpenGL gl)
         {
             // Prepare a draw list for drawing a cyllinder.
-            _millDrawListId = gl.GenLists(1);
-            gl.NewList(_millDrawListId, OpenGL.GL_COMPILE);
+            _axisDrawListId = gl.GenLists(1);
+            gl.NewList(_axisDrawListId, OpenGL.GL_COMPILE);
 
             List<int> indices;
             var vertices = CreateCylinder(out indices);
@@ -177,7 +177,7 @@ namespace AngleInterpolation.Model
 
         public void Render(OpenGL gl, Vector3 position, Vector3 rotation)
         {
-            if (_millDrawListId == uint.MinValue) CreateDrawList(gl);
+            if (_axisDrawListId == uint.MinValue) CreateDrawList(gl);
 
             gl.Color(255, 255, 255);
             gl.MatrixMode(MatrixMode.Modelview);
@@ -186,11 +186,11 @@ namespace AngleInterpolation.Model
             gl.Rotate(rotation.X, 1, 0, 0);
             gl.Rotate(rotation.Y, 0, 1, 0);
             gl.Rotate(rotation.Z, 0, 0, 1);
-            gl.CallList(_millDrawListId);
+            gl.CallList(_axisDrawListId);
             gl.Rotate(90, 1, 0, 0);
-            gl.CallList(_millDrawListId);
+            gl.CallList(_axisDrawListId);
             gl.Rotate(-90, 0, 0, 1);
-            gl.CallList(_millDrawListId);
+            gl.CallList(_axisDrawListId);
             gl.PopMatrix();
         }
 
